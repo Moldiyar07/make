@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{% if project %}Редактирование проекта{% else %}Создание нового проекта{% endif %}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Название проекта</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ project.title|default:'' }}" required>
+                            <div class="invalid-feedback">
+                                Пожалуйста, введите название проекта
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="4" required>{{ project.description|default:'' }}</textarea>
+                            <div class="invalid-feedback">
+                                Пожалуйста, добавьте описание проекта
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="start_date" class="form-label">Дата начала</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date"
+                                       value="{{ project.start_date|date:'Y-m-d'|default:'' }}" required>
+                                <div class="invalid-feedback">
+                                    Выберите дату начала проекта
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="end_date" class="form-label">Дата окончания</label>
+                                <input type="date" class="form-control" id="end_date" name="end_date"
+                                       value="{{ project.end_date|date:'Y-m-d'|default:'' }}" required>
+                                <div class="invalid-feedback">
+                                    Выберите дату окончания проекта
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'tasks:project_list' %}" class="btn btn-outline-secondary me-md-2">
+                                Отмена
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if project %}Сохранить изменения{% else %}Создать проект{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Скрипт для валидации формы
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>
+{% endblock %}
